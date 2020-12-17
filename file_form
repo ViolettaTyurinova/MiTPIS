@@ -1,0 +1,129 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+
+
+
+namespace WindowsFormsApp1
+{
+    public partial class Form1 : Form
+    {
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button_coder_Click(object sender, EventArgs e)     //генератор ключа
+        {
+            List<char> str = new List<char>();
+            int i = 0;
+
+            Random random = new Random();       //рандомные числа
+            while (i < 15000)
+            {
+                char c = (char)random.Next(10000, 100000);
+                str.Add(c);
+                i++;
+            }
+            textBox_key.Text = new string(str.ToArray());
+        }
+
+        private void button_decoder_Click(object sender, EventArgs e)   //шифратор и дешифратор
+        {
+            if (!(textBox_key.Text.Length < textBox_inputText.Text.Length))
+            {
+                List<char> coder_text = new List<char>();
+                int i = 0;
+                foreach (char c in textBox_inputText.Text)
+                {
+                    int _c = (int)c ^ (int)textBox_key.Text[i];     //XOR -> ^
+                    coder_text.Add((char)_c);
+                    i++;
+
+                }
+                textBox_inputText.Text = new string(coder_text.ToArray());
+            }
+            else
+            {
+                MessageBox.Show("Error! Ключ должен быть длинее текста", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        private void open_key_Click(object sender, EventArgs e)  //загрузка ключа шифрования только файл key_coder.txt
+        {
+            textBox_key.Clear();
+
+            string key_file = File.ReadAllText(@"C:\Users\Violetta\source\repos\WindowsFormsApp1\WindowsFormsApp1\key_coder.txt", Encoding.Default);    //путь
+
+            textBox_key.Text = key_file;
+        }
+
+        private void open_file_Click(object sender, EventArgs e)    //загрузка текста из диалогового окна 
+        {
+            textBox_inputText.Clear();
+
+            string filePath = "";
+            OpenFileDialog ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                filePath = ofd.FileName;
+            }
+
+            string str = System.IO.File.ReadAllText(@filePath, Encoding.Default); //Кодировка!
+            textBox_inputText.Text = str;
+        }
+
+        private void save_key_Click(object sender, EventArgs e)     //Сохранение ключа диалоговым окном
+        {
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.DefaultExt = ".txt";
+            saveFile.Filter = "File text|*.txt";        //файл только .txt
+            if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK && saveFile.FileName.Length > 0)
+            {
+                using (StreamWriter sw = new StreamWriter(saveFile.FileName, true, Encoding.Default))
+                {
+                    sw.WriteLine(textBox_key.Text);
+                    sw.Close();
+                }
+            }
+        }
+
+        private void save_text_Click(object sender, EventArgs e)        //сохранение текста диалоговым окном
+        {
+            SaveFileDialog saveFile = new SaveFileDialog();
+            saveFile.DefaultExt = ".txt";
+            saveFile.Filter = "File text|*.txt";        //файл только .txt
+            if (saveFile.ShowDialog() == System.Windows.Forms.DialogResult.OK && saveFile.FileName.Length > 0)
+            {
+                using (StreamWriter sw = new StreamWriter(saveFile.FileName, true))
+                {
+                    sw.WriteLine(textBox_inputText.Text);
+                    sw.Close();
+                }
+            }
+        }
+
+        private void clear_text_Click(object sender, EventArgs e)
+        {
+            textBox_inputText.Clear();
+        }
+
+        private void clear_key_Click(object sender, EventArgs e)
+        {
+            textBox_key.Clear();
+        }
+    }
+        
+}
+
+
+
