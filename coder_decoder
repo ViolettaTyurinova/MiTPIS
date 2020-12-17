@@ -27,13 +27,13 @@ namespace WindowsFormsApp1
             int i = 0;
 
             Random random = new Random();       //рандомные числа
-            while (i < 15000)
+            while (i < 15000) //ввод до 15тыс символов
             {
-                char c = (char)random.Next(10000, 100000);
+                char c = (char)random.Next(10000, 100000); 
                 str.Add(c);
                 i++;
             }
-            textBox_key.Text = new string(str.ToArray());
+            textBox_key.Text = new string(str.ToArray()); //вывод в текстбокс рандомного ключа
         }
 
         private void button_decoder_Click(object sender, EventArgs e)   //шифратор и дешифратор
